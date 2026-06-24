@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Капибары | Главные чилл-мастера</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f0c; /* Глубокий темный хвойно-угольный тон */
+            --card-bg: rgba(23, 31, 25, 0.6); /* Полупрозрачные стеклянные карточки */
+            --card-border: rgba(255, 255, 255, 0.05);
+            --accent-color: #f59e0b; /* Теплый янтарный неон */
+            --accent-glow: rgba(245, 158, 11, 0.3);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 5% 15%, rgba(245, 158, 11, 0.04) 0%, transparent 35%),
+                radial-gradient(circle at 95% 75%, rgba(34, 197, 94, 0.03) 0%, transparent 40%);
+        }
+
+        /* Навигация */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 15, 12, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-glow);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Главная секция */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-size: 3.8rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .hero-title span {
+            color: var(--accent-color);
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .typing-container {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            height: 45px;
+            margin-bottom: 40px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--accent-color);
+            margin-left: 5px;
+            animation: blink 0.6s infinite;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--accent-color);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+        }
+
+        .btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Основной контейнер */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        section {
+            margin-bottom: 120px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+
+        /* Карточки фактов */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 35px 30px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(245, 158, 11, 0.2);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.05);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Интерактивный раздел философии */
+        .philosophy-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .wisdom-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin: 30px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Галерея */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            height: 260px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+
+        /* Блок с зоопарком */
+        .zoo-block {
+            background: linear-gradient(135deg, #131c15 0%, #0b0f0c 100%);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 50px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoo-block h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .zoo-block p {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .zoo-block .sub-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+
+        /* Футер */
+        footer {
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            padding: 35px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 2.3rem; }
+            .container { padding: 40px 20px; }
+            .philosophy-box { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навигация -->
+    <nav>
+        <div class="logo">CapyZen.</div>
+        <ul class="nav-links">
+            <li><a href="#facts">Особенности</a></li>
+            <li><a href="#philosophy">Философия</a></li>
+            <li><a href="#gallery">Галерея</a></li>
+            <li><a href="#zoo">Где найти</a></li>
+        </ul>
+    </nav>
+
+    <!-- Главный экран -->
+    <header>
+        <h1 class="hero-title">Капибары — иконы <span>абсолютного чилла</span></h1>
+        <div class="typing-container">
+            <span id="typing-text"></span><span class="cursor">|</span>
+        </div>
+        <button class="btn" onclick="document.getElementById('facts').scrollIntoView();">Погрузиться в дзен</button>
+    </header>
+
+    <div class="container">
+        
+        <!-- Раздел 1: Особенности -->
+        <section id="facts">
+            <h2 class="section-title">Анатомия спокойствия</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Гиганты среди грызунов</h3>
+                    <p>Капибара — крупнейший представитель своего отряда на планете. Взрослые чилл-мастера легко вырастают до 60+ кг, сохраняя при этом исключительно мягкий вегетарианский нрав.</p>
+                </div>
+                <div class="card">
+                    <h3>Дипломатия дикой природы</h3>
+                    <p>Эти создания обладают уникальным социальным магнетизмом. Крокодилы, птицы, обезьяны и домашние коты без проблем отдыхают рядом с ними. Капибара — это всеобщий друг.</p>
+                </div>
+                <div class="card">
+                    <h3>Полуводная жизнь</h3>
+                    <p>Перепонки на лапах превращают их в превосходных пловцов. Вода для них — это спа-салон, убежище от хищников и идеальное место для дневного сна с торчащим наружу носом.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел 2: Философия (НОВЫЙ ИНТЕРАКТИВНЫЙ РАЗДЕЛ) -->
+        <section id="philosophy">
+            <h2 class="section-title">Философия Капибаризма</h2>
+            <div class="philosophy-box">
+                <p>У капибар определенно есть чему поучиться в плане продуктивности и борьбы с дедлайнами. Чувствуешь стресс от практики? Спроси совета у главного мастера.</p>
+                <div class="wisdom-display" id="wisdom-text">Нажми на кнопку ниже, чтобы получить мудрость...</div>
+                <button class="btn" onclick="generateWisdom()">Получить Дзен-совет</button>
+            </div>
+        </section>
+
+        <!-- Раздел 3: Галерея -->
+        <section id="gallery">
+            <h2 class="section-title">Забавные стоп-кадры</h2>
+            <div class="gallery">
+                <div class="gallery-item">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Capybara_%28Hydrochoerus_hydrochaeris%29.jpg/640px-Capybara_%28Hydrochoerus_hydrochaeris%29.jpg" alt="Капибара">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Hydrochoerus_hydrochaeris_in_Brazil_in_Pantanal.jpg/640px-Hydrochoerus_hydrochaeris_in_Brazil_in_Pantanal.jpg" alt="Капибара на солнце">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Capybara_with_closed_eyes.jpg/640px-Capybara_with_closed_eyes.jpg" alt="Капибара спит">
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел 4: Геопозиция зоопарка -->
+        <section id="zoo">
+            <div class="zoo-block">
+                <h3>Где встретить в Приморье?</h3>
+                <p>Если картинок из интернета недостаточно и нужно срочно синхронизировать свои биоритмы со спокойствием природы:</p>
+                <p style="margin: 20px 0;">📍 <strong>Зоопарк «Садгород»</strong> (г. Владивосток, ул. Воровского, 24В)</p>
+                <p class="sub-text">Местные капибары всегда готовы показать мастер-класс по игнорированию суеты внешнего мира.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Подвал -->
+    <footer>
+        <p>&copy; 2026 Учебная практика | ИМиКТ ДВФУ | Технологии анализа цифрового следа</p>
+    </footer>
+
+    <!-- JavaScript-Логика -->
+    <script>
+        // 1. Анимация печатной машинки
+        const words = [
+            "Мастера укрощения стресса", 
+            "Профессиональные созерцатели", 
+            "Главные союзники любого фауны",
+            "Твоё вдохновение на этой практике"
+        ];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingText = document.getElementById("typing-text");
+
+        function type() {
+            const currentWord = words[wordIndex];
+            
+            if (isDeleting) {
+                typingText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 1800;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 400;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(type, 500);
+        });
+
+        // 2. Интерактивный генератор советов (Логика нового раздела)
+        const wisdomQuotes = [
+            "«Если код не компилируется — прими теплую ванну с апельсинами. Код подождет, а дзен — нет.»",
+            "«Не суетись. Любой дедлайновый шторм когда-нибудь превратится в тихое болотце.»",
+            "«Будь как капибара: окружай себя только теми, кто не нарушает твоё внутреннее спокойствие.»",
+            "«Если практика утомляет, помни: даже самый крупный грызун тратит половину дня на качественный отдых.»",
+            "«Секрет успеха прост: закрой глаза, сделай глубокий вдох и представь, что ты просто греешься на солнце у реки.»"
+        ];
+
+        function generateWisdom() {
+            const display = document.getElementById("wisdom-text");
+            // Выбираем случайную цитату, отличную от текущей
+            let currentText = display.textContent;
+            let newWisdom = currentText;
+            
+            while (newWisdom === currentText) {
+                const randomIndex = Math.floor(Math.random() * wisdomQuotes.length);
+                newWisdom = wisdomQuotes[randomIndex];
+            }
+            
+            // Смягченный эффект переключения текста через opacity
+            display.style.opacity = 0;
+            setTimeout(() => {
+                display.textContent = newWisdom;
+                display.style.opacity = 1;
+                display.style.transition = "opacity 0.3s ease";
+            }, 200);
+        }
+
+        // 3. Скролл-анимация появления блоков
+        const sections = document.querySelectorAll("section");
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        sections.forEach(section => revealObserver.observe(section));
+    </script>
+</body>
+</html>
