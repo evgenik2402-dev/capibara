@@ -418,6 +418,137 @@
     </div>
 </section>
 
+ <!-- вопросы FAQ -->
+        <section id="faq">
+    <h2 class="section-title">Секреты мастеров (FAQ)</h2>
+    
+    <style>
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .faq-item:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.05);
+        }
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 22px 25px;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        .faq-question:hover, .faq-item.active .faq-question {
+            color: var(--accent-color);
+        }
+        .faq-icon {
+            font-size: 1.8rem;
+            font-weight: 400;
+            transition: transform 0.4s ease;
+            line-height: 0.5;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg); /* Превращаем плюс в крестик */
+            color: var(--accent-color);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .faq-answer p {
+            padding: 0 25px 20px 25px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+    </style>
+
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question">
+                А они правда дружат с крокодилами?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>Абсолютно! Капибары настолько спокойны, что крокодилы (и кайманы) просто не воспринимают их как угрозу или добычу, часто отдыхая буквально бок о бок на одном берегу.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Можно ли держать капибару в общежитии ДВФУ?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>К сожалению, нет. Этому гиганту нужен персональный бассейн, тонны свежей травы и много пространства. Комендант точно не оценит, да и соседи по комнате тоже.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Почему они всегда выглядят так, будто познали дзен?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>Это эволюционный механизм защиты. Их невозмутимость помогает им экономить энергию и не привлекать лишнее внимание хищников. Меньше стресса — дольше жизнь!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                
+                question.addEventListener('click', () => {
+                    // Закрываем все остальные открытые вкладки (аккордеон эффект)
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                        }
+                    });
+
+                    // Переключаем текущую вкладку
+                    item.classList.toggle('active');
+                    
+                    // Плавно раскрываем или скрываем текст
+                    if (item.classList.contains('active')) {
+                        answer.style.maxHeight = answer.scrollHeight + "px";
+                    } else {
+                        answer.style.maxHeight = null;
+                    }
+                });
+            });
+        });
+    </script>
+</section>
+
 
         <!-- Раздел 4: Геопозиция зоопарка -->
         <section id="zoo">
