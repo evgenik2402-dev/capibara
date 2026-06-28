@@ -418,6 +418,244 @@
     </div>
 </section>
 
+
+        <section id="clicker">
+    <h2 class="section-title">Капибара-кликер: Время Лимонов</h2>
+    
+    <style>
+        .clicker-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        .clicker-main {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .score-sub {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+        .capybara-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .capybara-btn:active {
+            transform: scale(0.95); /* Эффект нажатия */
+        }
+        .capybara-btn img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            user-select: none; /* Чтобы картинка не выделялась при частых кликах */
+        }
+        .shop-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .upgrade-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.3s;
+        }
+        .upgrade-card:hover {
+            border-color: var(--accent-color);
+        }
+        .upgrade-info h4 {
+            color: var(--text-main);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        .upgrade-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .buy-btn {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.2s;
+        }
+        .buy-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .buy-btn:not(:disabled):active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .clicker-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div class="clicker-container">
+        <div class="clicker-main">
+            <div class="score-display"><span id="lemon-count">0</span> 🍋</div>
+            <div class="score-sub">Лимонов в секунду: <span id="lps">0</span></div>
+            
+            <button class="capybara-btn" id="capy-click">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Capybara_%28Hydrochoerus_hydrochaeris%29.jpg/640px-Capybara_%28Hydrochoerus_hydrochaeris%29.jpg" alt="Кликни меня!" draggable="false">
+            </button>
+        </div>
+
+        <div class="shop-container">
+            <h3 style="color: var(--accent-color); margin-bottom: 10px;">Дзен-магазин</h3>
+            
+            <div class="upgrade-card">
+                <div class="upgrade-info">
+                    <h4>Сила мысли</h4>
+                    <p>+1 лимон за клик</p>
+                </div>
+                <button class="buy-btn" id="buy-click-power">10 🍋</button>
+            </div>
+
+            <div class="upgrade-card">
+                <div class="upgrade-info">
+                    <h4>Перк: Друг животных</h4>
+                    <p>Птичка приносит +1 лимон в сек.</p>
+                </div>
+                <button class="buy-btn" id="buy-auto-1">50 🍋</button>
+            </div>
+            
+            <div class="upgrade-card">
+                <div class="upgrade-info">
+                    <h4>Скрытность 100</h4>
+                    <p>Ниндзя-капибара: +5 лимонов в сек.</p>
+                </div>
+                <button class="buy-btn" id="buy-auto-2">200 🍋</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Базовые переменные и загрузка сохранений (эмуляция файла сохранения)
+            let lemons = parseInt(localStorage.getItem('capy_lemons')) || 0;
+            let clickPower = parseInt(localStorage.getItem('capy_clickPower')) || 1;
+            let autoLemons = parseInt(localStorage.getItem('capy_autoLemons')) || 0;
+
+            // Стоимость апгрейдов с динамическим расчетом
+            let costClickPower = parseInt(localStorage.getItem('capy_costClick')) || 10;
+            let costAuto1 = parseInt(localStorage.getItem('capy_costAuto1')) || 50;
+            let costAuto2 = parseInt(localStorage.getItem('capy_costAuto2')) || 200;
+
+            // DOM элементы
+            const lemonDisplay = document.getElementById('lemon-count');
+            const lpsDisplay = document.getElementById('lps');
+            const capyBtn = document.getElementById('capy-click');
+            
+            const btnClickPower = document.getElementById('buy-click-power');
+            const btnAuto1 = document.getElementById('buy-auto-1');
+            const btnAuto2 = document.getElementById('buy-auto-2');
+
+            // Функция обновления UI и сохранения прогресса в память браузера
+            function updateUI() {
+                lemonDisplay.textContent = lemons;
+                lpsDisplay.textContent = autoLemons;
+                
+                btnClickPower.textContent = `${costClickPower} 🍋`;
+                btnAuto1.textContent = `${costAuto1} 🍋`;
+                btnAuto2.textContent = `${costAuto2} 🍋`;
+
+                // Проверка доступности кнопок (хватает ли валюты на балансе)
+                btnClickPower.disabled = lemons < costClickPower;
+                btnAuto1.disabled = lemons < costAuto1;
+                btnAuto2.disabled = lemons < costAuto2;
+
+                // Сохранение прогресса
+                localStorage.setItem('capy_lemons', lemons);
+                localStorage.setItem('capy_clickPower', clickPower);
+                localStorage.setItem('capy_autoLemons', autoLemons);
+                localStorage.setItem('capy_costClick', costClickPower);
+                localStorage.setItem('capy_costAuto1', costAuto1);
+                localStorage.setItem('capy_costAuto2', costAuto2);
+            }
+
+            // Обработка клика по главной кнопке (капибаре)
+            capyBtn.addEventListener('click', () => {
+                lemons += clickPower;
+                updateUI();
+            });
+
+            // Покупка "Сила мысли" (Апгрейд клика)
+            btnClickPower.addEventListener('click', () => {
+                if (lemons >= costClickPower) {
+                    lemons -= costClickPower;
+                    clickPower += 1;
+                    costClickPower = Math.floor(costClickPower * 1.5); // Удорожание апгрейда
+                    updateUI();
+                }
+            });
+
+            // Покупка "Перк: Друг животных" (Базовый авто-кликер)
+            btnAuto1.addEventListener('click', () => {
+                if (lemons >= costAuto1) {
+                    lemons -= costAuto1;
+                    autoLemons += 1;
+                    costAuto1 = Math.floor(costAuto1 * 1.5);
+                    updateUI();
+                }
+            });
+
+            // Покупка "Скрытность 100" (Продвинутый авто-кликер)
+            btnAuto2.addEventListener('click', () => {
+                if (lemons >= costAuto2) {
+                    lemons -= costAuto2;
+                    autoLemons += 5;
+                    costAuto2 = Math.floor(costAuto2 * 1.5);
+                    updateUI();
+                }
+            });
+
+            // Игровой цикл (Game Loop) для авто-кликера
+            setInterval(() => {
+                if (autoLemons > 0) {
+                    lemons += autoLemons;
+                    updateUI();
+                }
+            }, 1000); // Срабатывает ровно раз в 1 секунду
+
+            // Инициализация интерфейса при первой загрузке страницы
+            updateUI();
+        });
+    </script>
+</section>
+
+
  <!-- вопросы FAQ -->
         <section id="faq">
     <h2 class="section-title">Секреты мастеров (FAQ)</h2>
